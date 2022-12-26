@@ -23,7 +23,6 @@ const Carousel = ({
   const [slideItemCount, setSlideItemCount] = useState(0)
   const [autoWidth, setAutoWidth] = useState<number>(0)
   const [autoHight, setAutoHight] = useState<number>(0)
-  const [childrenList, setChildrenList] = useState<HTMLCollection>()
   const {
     initialTranslateValue,
     next,
@@ -34,7 +33,9 @@ const Carousel = ({
     viewInitialSlideValue,
     animated,
     currentIndex,
-    slideCount
+    slideCount,
+    settingCarousel,
+    updateWidth,
   } = useCarousel({
     spaceBetween,
     slidesPerView,
@@ -47,29 +48,12 @@ const Carousel = ({
     setSlideItemCount(Number(ref.current?.children.length))
     setAutoWidth(ref.current?.firstElementChild?.clientWidth as number)
     setAutoHight(ref.current?.firstElementChild?.clientHeight as number)
-    setChildrenList(ref.current?.children)
+    if (ref.current) {
+      settingCarousel(ref.current)
+    }
   }, [])
 
-  const isCloneElement = (e: Element) => e.classList.contains('clone')
   const arr: Element[] = []
-  useEffect(() => {
-    Array.prototype.slice.call(ref.current?.children).forEach((e: Element) => {
-      if (!isCloneElement(e as Element)) {
-        const cloneSlide = e.cloneNode(true) as Element
-        cloneSlide.classList.add(`clone`)
-        ref.current?.appendChild(cloneSlide)
-      }
-    })
-    Object.entries((ref.current as HTMLDivElement).children)
-      .reverse()
-      .forEach(([key, e]: [key: string, element: unknown]) => {
-        if (!isCloneElement(e as Element)) {
-          const cloneSlide: Node = (e as Element)?.cloneNode(true)
-          ;(cloneSlide as Element).classList.add(`clone`)
-          ref.current?.prepend(cloneSlide)
-        }
-      })
-  }, [])
   if (ref.current?.children) {
     Array.prototype.slice.call(ref.current?.children).forEach((e: Element) => {
       !e.classList.contains('clone') && arr.push(e)
@@ -88,7 +72,7 @@ const Carousel = ({
           position: relative;
         `}
       >
-        <div css={box(viewInitialSlideValue(), autoHight)}>
+        <div css={box(viewInitialSlideValue(), autoHight, updateWidth())}>
           <div
             css={slideInner({
               initialTranslateValue: initialTranslateValue(),
@@ -132,7 +116,7 @@ const Carousel = ({
     </div>
   )
 }
-const box = (viewInitialSlideValue: number, autoHight: number) => css`
+const box = (viewInitialSlideValue: number, autoHight: number , updateWidth: number) => css`
   position: relative;
   margin: 0px auto;
   overflow: hidden;
@@ -143,17 +127,19 @@ const slideInner = ({
   initialTranslateValue,
   moveSlideValue,
   transition,
+  spaceBetween
 }: {
   initialTranslateValue: number
   moveSlideValue: number
   transition: string
+  spaceBetween?: number
 }) => css`
   transform: translateX(${initialTranslateValue}px);
   position: absolute;
   top: 0;
   left: ${moveSlideValue}px;
   display: flex;
-  gap: 10px;
+  gap: ${spaceBetween}px;
   &.animated {
     transition: ${transition};
   }

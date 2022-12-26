@@ -12,13 +12,13 @@ export default function Home() {
      <Carousel>
         <div css={box}>
           <img
-            src="https://dummyimage.com/980x300/acc/fff.gif&text=01"
+            src="https://dummyimage.com/500x300/acc/fff.gif&text=01"
             alt=""
           />
         </div>
         <div css={box}>
           <img
-            src="https://dummyimage.com/980x300/acc/fff.gif&text=02"
+            src="https://dummyimage.com/500x300/acc/fff.gif&text=02"
             alt=""
           />
         </div>
@@ -29,7 +29,7 @@ export default function Home() {
 
 const box = css`
   display: flex;
-  max-width: 980px;
+  max-width: 500px;
   width: 100%;
   color: white;
   height: 300px;
