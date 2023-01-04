@@ -2,7 +2,7 @@ import { RefObject, useCallback, useEffect, useState } from "react"
 import useElementProperty from "./useElementProperty"
 import { useWindowSize } from "./useWindowSize"
 
-export const useSlide = ({
+export const useCarousel = ({
   spaceBetween = 0,
   slidesPerView,
   viewSlideWidth,
@@ -18,7 +18,6 @@ export const useSlide = ({
     clientHeight: 0,
   })
   // const { firstElementChild } = useElementProperty()
-  console.log(parent)
   const { currentIndex, slideCount, clientWidth, clientHeight } = parent
   const [moveSlideValue, setdotMoveSlideValue] = useState<number>(1)
   const [transition, setTransition] = useState('')
@@ -60,6 +59,7 @@ export const useSlide = ({
 
   const setSlide = (parent: HTMLDivElement) => initialClonChildren(parent)
 
+  console.log(clientWidth)
   const processMoveSlide = () => {
     if (Math.abs(currentIndex) === slideCount) {
       setTimeout(() => {

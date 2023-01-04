@@ -1,48 +1,20 @@
-/* eslint-disable react/no-children-prop */
-import {Children, cloneElement, isValidElement, ReactNode, useEffect, useRef } from 'react'
-import { css } from '@emotion/react'
-import { useCarousel } from '../../hooks/useCarousel'
+import { css } from "@emotion/react"
+import { Children, cloneElement, isValidElement, ReactNode, useRef } from "react"
+import useCarouselSample from "../../hooks/useCarouselPro"
 
-const Item = (children: any) => {
-  return (
-    <div>
-      {Children.map(children, (item) => {
-        return item;
-      })}
-    </div>
-  );
+const Clone = () => {
+  return <div>sadfasdf</div>
 }
 
-
-const MainCarousel = ({
-  children,
-  customStyle,
-  slidesPerView,
-  viewSlideWidth,
-  spaceBetween
-}: {
-  children: ReactNode,
-  customStyle?: { [key: string]: string }
-  slidesPerView?: number
-  viewSlideWidth?: number
-  spaceBetween?: number
-}): JSX.Element => {
-  const slideChildren = useRef<HTMLDivElement>(null)
+const CarouselDev = ({ children }: { children: ReactNode }) => {
+  const divRef = useRef(null)
   const {
-    currentIndex,
-    slideControl,
     value,
+    slideControl,
     moveSlideValue,
     transition,
-    slideBody
-  } = useCarousel({
-    spaceBetween,
-    slidesPerView,
-    viewSlideWidth
-  })
-  useEffect(() => {
-    slideChildren.current && slideControl.setSlide(slideChildren.current)
-  }, [])
+    currentIndex,
+  } = useCarouselSample(divRef, {})
   return (
     <div>
       <div
@@ -53,48 +25,34 @@ const MainCarousel = ({
           height: 300px;
         `}
       >
-        <div css={css`
+       <div css={css`
           position: absolute;
           left: calc((50% - (${value.viewInitialSlideValue} / 2)));
         `}>
           <div css={box(value.viewInitialSlideValue)}>
-            <div css={slideInner({
-              initialTranslateValue: value.initialTranslateValue,
-              moveSlideValue,
-              transition,
-              spaceBetween,
-              currentIndex
-            })}
-              ref={slideChildren}
+            <div
+              css={slideInner({
+                initialTranslateValue: value.initialTranslateValue,
+                moveSlideValue,
+                transition
+              })}
               className={slideControl.animated}
+              ref={divRef}
             >
-              {/* {children} */}
-              <Item children={children} />
+              {/* {Children.map(children, (item: ReactNode) => {
+                console.log(item);
+                console.log(isValidElement(item));
+                return item;
+              })} */}
+              {children}
             </div>
           </div>
-        </div>1
-        <div css={controller.buttonBox}>
-          <button css={controller.button(customStyle)} onClick={() => slideControl.prev()}>＜</button>
-          <button css={controller.button(customStyle)} onClick={() => slideControl.next()}>＞</button>
         </div>
       </div>
-      {
-        slideBody.map((e, i) => {
-          const currentPage =
-            currentIndex < 0 ? currentIndex + slideBody.length : currentIndex
-          return (
-            <button
-              onClick={() => value.pageNation(i)}
-              className={`dot-${i}`}
-              key={`dot-${i}`}
-              css={controller.dot(i === currentPage)}
-            />
-          )
-        })
-      }
     </div>
   )
 }
+
 const box = (viewInitialSlideValue: number) => css`
   display: flex ;
   position: relative;
@@ -114,7 +72,7 @@ const slideInner = ({
   spaceBetween?: number
   currentIndex?: number
 }) => css`
-  transform: translateX(${initialTranslateValue}px);
+  /* transform: translateX(${initialTranslateValue}px); */
   position: absolute;
   top: 0;
   left: ${moveSlideValue}px;
@@ -170,5 +128,4 @@ const controller = {
           border-radius: 50%;
         `,
 }
-
-export default MainCarousel
+export default CarouselDev
