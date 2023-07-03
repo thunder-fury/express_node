@@ -1,17 +1,16 @@
-import css from "styled-jsx/css"
-
+import { useEffect, useMemo, useState } from 'react'
+import { css } from '@emotion/react';
+import Icon from '../../Icon';
+import { Color } from '../../../styles/Variables'
+import { form } from '../../../styles/components/atoms/Form';
 interface Props {
   name: string
-  value: any
+  value?: string
   label?: string
   id?: string
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
   attribute?: string
   validateType?: string
-  checkd?: boolean
-  v?: string[]
-  isBorder?: boolean
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
-  onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void
 }
 
 const Checkbox: React.FC<Props> = ({
@@ -20,81 +19,66 @@ const Checkbox: React.FC<Props> = ({
   id,
   value,
   validateType,
-  checkd,
   onChange,
-  attribute,
-  onClick,
-  isBorder,
-  v }) => {
+  attribute }) => {
+  const [checked, setChecked] = useState(false)
+  const setChecking = useMemo(() => {
+    return (e: any) => {
+      setChecked(e.target.checked);
+    };
+  }, []);
 
   return (
-    <label
-      css={check.label}
-      htmlFor={id}
-      className={[checkd ? 'is-checked' : '', isBorder && `is-border`].join(``)}
-    >
-      <div css={check.inner}>
-        {checkd ? <div css={check.icon}>  </div> : ''}
-        <input
-          data-checkebox
-          id={id}
-          data-validate-type={validateType}
-          css={check.element}
-          type={`checkbox`}
-          name={name}
-          defaultChecked={v && v.includes(value)}
-          value={value}
-          onChange={onChange}
-          className={checkd ? 'is-checked' : ''}
-          onClick={onClick}
-        />
-      </div>
-      {value}
-    </label>
+    <>
+      <label css={form.checkbox.continer} htmlFor={id}>
+        <div css={form.checkbox.parent}>
+          {checked &&
+            <div css={form.checkbox.icon}>
+              <Icon w={10} h={10} icon={`check`} color={Color.white} />
+            </div>
+          }
+          <input
+            css={form.checkbox.box}
+            data-checkebox
+            id={id}
+            data-validate-type={validateType}
+            type={`checkbox`}
+            name={name}
+            value={value}
+            onChange={setChecking}
+            className={checked ? 'is-checked' : ''}
+          />
+        </div>
+        {label}
+      </label>
+    </>
   )
 }
 
-export const check = {
-  container: css`
-    display: flex;
-  `,
-  label: css`
-    display: flex;
-    align-items: center;
-    font-size: 1.3rem;
-    width: 100%;
-    justify-content: center;
-    &.is-border {
-      border: solid 1px gray;
-    }
-    padding: 10px;
-    margin-right: 10px;
-    &:last-of-type {
-      margin-right: 0;
-    }
-    &.is-checked {
-      background-color: black;
-      color: white;
-    }
-    cursor: pointer;
-  `,
-  inner: css`
-    position: relative;
-    display: flex;
-    justify-content: center;
-  `,
-  icon: css`
-    position: absolute;
-  `,
-  element: css`
-    width: 15px;
-    height: 15px;
-    /* border: solid 1px black */
-    &:checked {
-      /* background-color: #fff;
-      border: solid 1px #000 ; */
-    }
-  `
+const styles = {
+  checkbox: {
+    continer: css`
+      display: flex;
+      align-items: center;
+      font-size: 1.3rem;
+    `,
+    parent: css`
+      position: relative;
+      display: flex;
+      justify-content: center;
+    `,
+    icon: css`
+      position: absolute;
+    `,
+    box: css`
+      width: 15px;
+      height: 15px;
+      border: solid 1px ${Color.gray6};
+      &.is-checked {
+        background-color: ${Color.black};
+      }
+    `
+  },
 }
 
-export default Checkbox
+export default Checkbox;
